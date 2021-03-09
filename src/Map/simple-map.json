@@ -1,0 +1,17 @@
+{
+  "image": "/img/map.png",
+  "topLeft": {
+    "lat": 5,
+    "lon": 10
+  },
+  "bottomRight": {
+    "lat": 12,
+    "lon": 17
+  },
+  "startPosition": {
+    "x": 2450,
+    "y": 1712
+  },
+  "width": 4900,
+  "height": 3424
+}

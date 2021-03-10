@@ -1,6 +1,7 @@
 import React, {
   Component,
   MouseEvent as ReactMouseEvent,
+  TouchEvent as ReactTouchEvent,
   createRef,
   ReactNode,
   RefObject,
@@ -16,8 +17,8 @@ interface IContainerMapProps {
 
 export class ContainerMap extends Component<IContainerMapProps> {
   mapRef = createRef<HTMLDivElement>()
-  posX = this.props.map.startPosition.x
-  posY = this.props.map.startPosition.y
+  baseX = this.props.map.startPosition.x
+  baseY = this.props.map.startPosition.y
 
   componentDidMount() {
     const { map } = this.props
@@ -29,62 +30,106 @@ export class ContainerMap extends Component<IContainerMapProps> {
     this.updateMapPosition()
   }
 
+  isMapInMoving = false
   start: Vector = { x: 0, y: 0 }
   now: Vector = { x: 0, y: 0 }
 
-  get PosX(): number {
-    const { current: container } = this.props.rootRef
+  get PositionX(): number {
+    const {
+      map: { width: mapWidth },
+      rootRef: { current: container },
+    } = this.props
+
+    const mapViewWidth: number = container ? container.clientWidth : 0
 
     return Math.max(
       0,
-      Math.min(
-        this.props.map.width - (container ? container.clientWidth : 0),
-        this.posX + this.start.x - this.now.x
-      )
+      Math.min(mapWidth - mapViewWidth, this.baseX + this.start.x - this.now.x)
     )
   }
 
-  get PosY(): number {
-    const { current: container } = this.props.rootRef
+  get PositionY(): number {
+    const {
+      map: { height: mapHeight },
+      rootRef: { current: container },
+    } = this.props
+
+    const mapViewHeight: number = container ? container.clientHeight : 0
 
     return Math.max(
       0,
       Math.min(
-        this.props.map.height - (container ? container.clientHeight : 0),
-        this.posY + this.start.y - this.now.y
+        mapHeight - mapViewHeight,
+        this.baseY + this.start.y - this.now.y
       )
     )
   }
 
   updateMapPosition() {
-    this.mapRef.current!.style.transform = `translate(-${this.PosX}px, -${this.PosY}px)`
+    this.mapRef.current!.style.transform = `translate(-${this.PositionX}px, -${this.PositionY}px)`
   }
 
-  handleMouseMove = ({ clientX, clientY }: MouseEvent) => {
-    this.now.x = clientX
-    this.now.y = clientY
+  startMoving(x: number, y: number) {
+    const { current } = this.mapRef
+
+    this.isMapInMoving = true
+    this.start.x = this.now.x = x
+    this.start.y = this.now.y = y
+
+    current!.style.cursor = 'move'
+    current?.addEventListener('mousemove', this.handleMoveMapDesktop)
+    current?.addEventListener('touchmove', this.handleMoveMapMobile)
+  }
+
+  stopMoving() {
+    const { current } = this.mapRef
+
+    this.baseX = this.PositionX
+    this.baseY = this.PositionY
+
+    this.isMapInMoving = false
+    this.start.x = this.now.x = 0
+    this.start.y = this.now.y = 0
+
+    current!.style.cursor = 'default'
+    current?.removeEventListener('mousemove', this.handleMoveMapDesktop)
+    current?.removeEventListener('touchmove', this.handleMoveMapMobile)
+  }
+
+  moveMap(x: number, y: number) {
+    this.now.x = x
+    this.now.y = y
 
     this.updateMapPosition()
   }
 
-  handleMouseDown = ({ clientX, clientY }: ReactMouseEvent<HTMLDivElement>) => {
-    const { current } = this.mapRef
-
-    this.start.x = this.now.x = clientX
-    this.start.y = this.now.y = clientY
-
-    current!.style.cursor = 'pointer'
-    current?.addEventListener('mousemove', this.handleMouseMove)
+  handleStartMovingDesktop = ({
+    clientX,
+    clientY,
+  }: ReactMouseEvent<HTMLDivElement>) => {
+    this.startMoving(clientX, clientY)
   }
 
-  handleMouseUp = () => {
-    const { current } = this.mapRef
+  handleStartMovingMobile = ({ touches }: ReactTouchEvent<HTMLDivElement>) => {
+    if (touches.length === 1) {
+      this.startMoving(touches[0].clientX, touches[0].clientY)
+    }
+  }
 
-    this.posX = this.PosX
-    this.posY = this.PosY
+  handleStopMoving = () => {
+    if (this.isMapInMoving) {
+      this.stopMoving()
+    }
+  }
 
-    current!.style.cursor = 'default'
-    current?.removeEventListener('mousemove', this.handleMouseMove)
+  handleMoveMapDesktop = ({ clientX, clientY }: MouseEvent) => {
+    this.moveMap(clientX, clientY)
+  }
+
+  handleMoveMapMobile = ({ touches }: TouchEvent) => {
+    if (touches.length === 1) {
+      this.moveMap(touches[0].clientX, touches[0].clientY)
+    }
   }
 
   render() {
@@ -95,10 +140,14 @@ export class ContainerMap extends Component<IContainerMapProps> {
         ref={this.mapRef}
         className={className}
         style={{ backgroundImage: `url(${map.image})` }}
-        onMouseDown={this.handleMouseDown}
-        onTouchStart={this.handleMouseDown as any}
-        onMouseUp={this.handleMouseUp}
-        onMouseOut={this.handleMouseUp}
+        /** Desktop */
+        onMouseDown={this.handleStartMovingDesktop}
+        onMouseUp={this.handleStopMoving}
+        onMouseOut={this.handleStopMoving}
+        /** Mobile */
+        onTouchStart={this.handleStartMovingMobile}
+        onTouchEnd={this.handleStopMoving}
+        onTouchCancel={this.handleStopMoving}
       >
         {children}
       </div>

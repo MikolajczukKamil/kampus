@@ -10,6 +10,9 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: 'hidden',
     },
     map: {
+      userSelect: 'none',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'left top',
       transform: 'translate(0px, 0px)',
     },
   })

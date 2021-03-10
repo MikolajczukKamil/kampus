@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
       userSelect: 'none',
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'left top',
+      transformOrigin: 'top left',
       transform: 'translate(0px, 0px)',
     },
   })
@@ -31,6 +32,16 @@ export function Container({ children }: IContainerProps) {
     <div className={classes.root} ref={rootRef}>
       <ContainerMap className={classes.map} map={map} rootRef={rootRef}>
         {children}
+        <div
+          style={{
+            transform: 'translate(100px, 200px)',
+            width: 50,
+            height: 50,
+            background: 'red',
+          }}
+        >
+          Lorem Ipsum
+        </div>
       </ContainerMap>
     </div>
   )

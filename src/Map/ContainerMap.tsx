@@ -33,6 +33,7 @@ export class ContainerMap extends Component<IContainerMapProps> {
   isMapInMoving = false
   start: Vector = { x: 0, y: 0 }
   now: Vector = { x: 0, y: 0 }
+  scale = 1
 
   get PositionX(): number {
     const {
@@ -44,7 +45,10 @@ export class ContainerMap extends Component<IContainerMapProps> {
 
     return Math.max(
       0,
-      Math.min(mapWidth - mapViewWidth, this.baseX + this.start.x - this.now.x)
+      Math.min(
+        mapWidth * this.scale - mapViewWidth,
+        this.baseX + (this.start.x - this.now.x)
+      )
     )
   }
 
@@ -59,14 +63,14 @@ export class ContainerMap extends Component<IContainerMapProps> {
     return Math.max(
       0,
       Math.min(
-        mapHeight - mapViewHeight,
-        this.baseY + this.start.y - this.now.y
+        mapHeight * this.scale - mapViewHeight,
+        this.baseY + (this.start.y - this.now.y)
       )
     )
   }
 
   updateMapPosition() {
-    this.mapRef.current!.style.transform = `translate(-${this.PositionX}px, -${this.PositionY}px)`
+    this.mapRef.current!.style.transform = `translate(-${this.PositionX}px, -${this.PositionY}px) scale(${this.scale})`
   }
 
   startMoving(x: number, y: number) {

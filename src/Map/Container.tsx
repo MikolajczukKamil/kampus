@@ -9,13 +9,6 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: 1,
       overflow: 'hidden',
     },
-    map: {
-      userSelect: 'none',
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'left top',
-      transformOrigin: 'top left',
-      transform: 'translate(0px, 0px)',
-    },
   })
 )
 
@@ -30,17 +23,28 @@ export function Container({ children }: IContainerProps) {
 
   return (
     <div className={classes.root} ref={rootRef}>
-      <ContainerMap className={classes.map} map={map} rootRef={rootRef}>
+      <ContainerMap map={map} rootRef={rootRef}>
         {children}
         <div
           style={{
             transform: 'translate(100px, 200px)',
-            width: 50,
+            maxWidth: 70,
             height: 50,
             background: 'red',
+            padding: 8,
           }}
         >
-          Lorem Ipsum
+          Lorem
+          <div
+            style={{
+              background: 'blue',
+              color: 'wheat'
+            }}
+
+            onClick={() => console.warn("click")}
+          >
+            Ipsum
+          </div>
         </div>
       </ContainerMap>
     </div>

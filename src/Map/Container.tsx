@@ -1,16 +1,14 @@
 import React, { ReactNode, useContext, useRef } from 'react'
-import { Theme, makeStyles, createStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import { MapContext } from './MapContext'
-import { ContainerMap } from './ContainerMap'
+import { MapLayer } from './MapLayer'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flex: 1,
-      overflow: 'hidden',
-    },
-  })
-)
+const useStyles = makeStyles({
+  root: {
+    flex: 1,
+    overflow: 'hidden',
+  },
+})
 
 interface IContainerProps {
   children: ReactNode
@@ -23,30 +21,9 @@ export function Container({ children }: IContainerProps) {
 
   return (
     <div className={classes.root} ref={rootRef}>
-      <ContainerMap map={map} rootRef={rootRef}>
+      <MapLayer map={map} rootRef={rootRef}>
         {children}
-        <div
-          style={{
-            transform: 'translate(100px, 200px)',
-            maxWidth: 70,
-            height: 50,
-            background: 'red',
-            padding: 8,
-          }}
-        >
-          Lorem
-          <div
-            style={{
-              background: 'blue',
-              color: 'wheat'
-            }}
-
-            onClick={() => console.warn("click")}
-          >
-            Ipsum
-          </div>
-        </div>
-      </ContainerMap>
+      </MapLayer>
     </div>
   )
 }

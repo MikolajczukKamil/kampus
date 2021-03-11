@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode } from 'react'
 import { IMap } from './IMap'
-import { useSimpleMap } from './SimpleMap'
+import simpleMap from './simple-map.json'
 
 interface IMapContextValue {
   map: IMap
@@ -24,7 +24,7 @@ interface IMapContextProviderProps {
 }
 
 export function MapContextProvider({ children }: IMapContextProviderProps) {
-  const map: IMap = useSimpleMap()
+  const map: IMap = simpleMap
 
   return <MapContext.Provider value={{ map }}>{children}</MapContext.Provider>
 }

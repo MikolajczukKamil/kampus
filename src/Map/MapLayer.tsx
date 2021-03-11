@@ -15,13 +15,13 @@ const useStyles = makeStyles({
   },
 })
 
-interface IContainerMapProps {
+interface IMapLayerProps {
   map: IMap
   rootRef: RefObject<HTMLDivElement>
   children: ReactNode
 }
 
-export function ContainerMap({ map, children, rootRef }: IContainerMapProps) {
+export function MapLayer({ map, children, rootRef }: IMapLayerProps) {
   const classes = useStyles()
   const mapRef = useRef<HTMLDivElement>(null)
   const controller = useMapController(mapRef, rootRef, map)

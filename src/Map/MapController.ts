@@ -5,7 +5,8 @@ import {
   MouseEvent as ReactMouseEvent,
   TouchEvent as ReactTouchEvent,
 } from 'react'
-import { IMap, Vector } from './IMap'
+import { IMap } from './IMap'
+import { Vector } from './Math/Vector'
 
 class MapController {
   private baseX: number

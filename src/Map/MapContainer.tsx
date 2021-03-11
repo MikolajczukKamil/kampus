@@ -10,11 +10,11 @@ const useStyles = makeStyles({
   },
 })
 
-interface IContainerProps {
+interface IMapContainerProps {
   children: ReactNode
 }
 
-export function Container({ children }: IContainerProps) {
+export function MapContainer({ children }: IMapContainerProps) {
   const classes = useStyles()
   const rootRef = useRef<HTMLDivElement>(null)
   const { map } = useContext(MapContext)

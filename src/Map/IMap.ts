@@ -1,12 +1,5 @@
-export interface IPosition {
-  lat: number
-  lon: number
-}
-
-export interface Vector {
-  x: number
-  y: number
-}
+import { IPosition } from './Math/IPosition'
+import { Vector } from './Math/Vector'
 
 export interface IMap {
   /** Url */

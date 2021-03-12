@@ -1,18 +1,19 @@
 import {
-  useState,
-  useEffect,
-  RefObject,
   MouseEvent as ReactMouseEvent,
+  RefObject,
   TouchEvent as ReactTouchEvent,
+  useContext,
+  useEffect,
+  useState,
 } from 'react'
-import { IMap } from './IMap'
-import { Vector } from './Math/Vector'
+import { IMap } from '../../IMap'
+import { Vector } from '../../Math/Vector'
+import { MapContext } from '../../MapContext'
 
 class MapController {
   private baseX: number
   private baseY: number
 
-  private scale = 1
   private isMapInMoving = false
   private start: Vector = { x: 0, y: 0 }
   private now: Vector = { x: 0, y: 0 }
@@ -20,7 +21,8 @@ class MapController {
   constructor(
     private mapRef: RefObject<HTMLDivElement>,
     private rootRef: RefObject<HTMLDivElement>,
-    private map: IMap
+    private map: IMap,
+    private scale: number,
   ) {
     this.baseX = map.startPosition.x
     this.baseY = map.startPosition.y
@@ -40,8 +42,14 @@ class MapController {
     this.updateMapPosition()
   }
 
+  public useScale(scale: number) {
+    this.scale = scale
+
+    this.updateMapPosition()
+  }
+
   public get Transform(): string {
-    return `translate(-${this.PositionX}px, -${this.PositionY}px) scale(${this.scale})`
+    return `translate(-${ this.PositionX }px, -${ this.PositionY }px) scale(${ this.scale })`
   }
 
   private get PositionX(): number {
@@ -55,8 +63,8 @@ class MapController {
       0,
       Math.min(
         mapWidth * this.scale - mapViewWidth,
-        this.baseX + (this.start.x - this.now.x)
-      )
+        this.baseX + (this.start.x - this.now.x),
+      ),
     )
   }
 
@@ -72,8 +80,8 @@ class MapController {
       0,
       Math.min(
         mapHeight * this.scale - mapViewHeight,
-        this.baseY + (this.start.y - this.now.y)
-      )
+        this.baseY + (this.start.y - this.now.y),
+      ),
     )
   }
 
@@ -86,17 +94,21 @@ class MapController {
   private startMoving(x: number, y: number) {
     const { current } = this.mapRef
 
+    if (this.isMapInMoving || !current) return
+
     this.isMapInMoving = true
     this.start.x = this.now.x = x
     this.start.y = this.now.y = y
 
-    current!.style.cursor = 'move'
-    current?.addEventListener('mousemove', this.handleMoveMapDesktop)
-    current?.addEventListener('touchmove', this.handleMoveMapMobile)
+    current.style.cursor = 'move'
+    current.addEventListener('mousemove', this.handleMoveMapDesktop) // , { capture: true }
+    current.addEventListener('touchmove', this.handleMoveMapMobile)
   }
 
   private stopMoving() {
     const { current } = this.mapRef
+
+    if (!this.isMapInMoving || !current) return
 
     this.baseX = this.PositionX
     this.baseY = this.PositionY
@@ -105,9 +117,9 @@ class MapController {
     this.start.x = this.now.x = 0
     this.start.y = this.now.y = 0
 
-    current!.style.cursor = 'default'
-    current?.removeEventListener('mousemove', this.handleMoveMapDesktop)
-    current?.removeEventListener('touchmove', this.handleMoveMapMobile)
+    current.style.cursor = 'default'
+    current.removeEventListener('mousemove', this.handleMoveMapDesktop) // , { capture: true }
+    current.removeEventListener('touchmove', this.handleMoveMapMobile)
   }
 
   private moveMap(x: number, y: number) {
@@ -123,9 +135,7 @@ class MapController {
     this.startMoving(clientX, clientY)
   }
 
-  public handleStartMovingMobile = ({
-    touches,
-  }: ReactTouchEvent<HTMLDivElement>) => {
+  public handleStartMovingMobile = ({ touches }: ReactTouchEvent<HTMLDivElement>) => {
     if (touches.length === 1) {
       this.startMoving(touches[0].clientX, touches[0].clientY)
     }
@@ -148,12 +158,9 @@ class MapController {
   }
 }
 
-export function useMapController(
-  mapRef: RefObject<HTMLDivElement>,
-  rootRef: RefObject<HTMLDivElement>,
-  map: IMap
-) {
-  const [controller] = useState(new MapController(mapRef, rootRef, map))
+export function useMapController(mapRef: RefObject<HTMLDivElement>, rootRef: RefObject<HTMLDivElement>) {
+  const { map, scale } = useContext(MapContext)
+  const [ controller ] = useState(new MapController(mapRef, rootRef, map, scale))
 
   useEffect(() => {
     // Changing the map re-creates MapController
@@ -164,7 +171,7 @@ export function useMapController(
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map])
+  }, [ map ])
 
   return controller
 }

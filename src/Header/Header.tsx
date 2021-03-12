@@ -2,14 +2,13 @@ import React from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
-import { Theme, makeStyles, createStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = makeStyles(({
     title: {
       flexGrow: 1,
     },
-  })
+  }),
 )
 
 export function Header() {
@@ -18,7 +17,7 @@ export function Header() {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" className={classes.title}>
+        <Typography variant="h6" className={ classes.title }>
           Kampus SGGW
         </Typography>
       </Toolbar>

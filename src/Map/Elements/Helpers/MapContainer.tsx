@@ -1,6 +1,5 @@
-import React, { ReactNode, useContext, useRef } from 'react'
+import React, { ReactNode, useRef } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { MapContext } from './MapContext'
 import { MapLayer } from './MapLayer'
 
 const useStyles = makeStyles({
@@ -17,12 +16,11 @@ interface IMapContainerProps {
 export function MapContainer({ children }: IMapContainerProps) {
   const classes = useStyles()
   const rootRef = useRef<HTMLDivElement>(null)
-  const { map } = useContext(MapContext)
 
   return (
-    <div className={classes.root} ref={rootRef}>
-      <MapLayer map={map} rootRef={rootRef}>
-        {children}
+    <div className={ classes.root } ref={ rootRef }>
+      <MapLayer rootRef={ rootRef }>
+        { children }
       </MapLayer>
     </div>
   )

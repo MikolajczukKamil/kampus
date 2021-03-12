@@ -6,9 +6,9 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { IMap } from '../../IMap'
-import { Vector } from '../../Math/Vector'
-import { MapContext } from '../../MapContext'
+import { IMap } from '../IMap'
+import { Vector } from '../Math/Vector'
+import { MapContext } from '../MapContext'
 
 class MapController {
   private baseX: number
@@ -57,7 +57,8 @@ class MapController {
       map: { width: mapWidth },
       rootRef: { current: container },
     } = this
-    const mapViewWidth: number = container ? container.clientWidth : 0
+
+    const mapViewWidth = container?.clientWidth || 0
 
     return Math.max(
       0,
@@ -74,7 +75,7 @@ class MapController {
       rootRef: { current: container },
     } = this
 
-    const mapViewHeight: number = container ? container.clientHeight : 0
+    const mapViewHeight = container?.clientHeight || 0
 
     return Math.max(
       0,
@@ -129,10 +130,16 @@ class MapController {
     this.updateMapPosition()
   }
 
-  /** Handlers */
+  /**
+   * Handlers
+   *
+   *
+   */
 
-  public handleStartMovingDesktop = ({ clientX, clientY }: ReactMouseEvent) => {
-    this.startMoving(clientX, clientY)
+  public handleStartMovingDesktop = ({ clientX, clientY, target }: ReactMouseEvent) => {
+    if (target === this.mapRef.current) {
+      this.startMoving(clientX, clientY)
+    }
   }
 
   public handleStartMovingMobile = ({ touches }: ReactTouchEvent<HTMLDivElement>) => {
@@ -142,7 +149,7 @@ class MapController {
   }
 
   public handleStopMoving = (ev: ReactMouseEvent | ReactTouchEvent) => {
-    if (this.isMapInMoving && ev.target === this.mapRef.current) {
+    if (ev.target === this.mapRef.current) {
       this.stopMoving()
     }
   }

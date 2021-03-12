@@ -1,7 +1,7 @@
 import React, { ReactNode, RefObject, useContext, useRef } from 'react'
 import { makeStyles } from '@material-ui/core'
 import { useMapController } from './MapController'
-import { MapContext } from '../../MapContext'
+import { MapContext } from '../MapContext'
 
 const useStyles = makeStyles({
   map: {
@@ -9,8 +9,10 @@ const useStyles = makeStyles({
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'left top',
     transformOrigin: 'top left',
+    position: 'relative',
     '& > *': {
       pointerEvents: 'none',
+      position: 'absolute',
     },
   },
 })

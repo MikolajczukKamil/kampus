@@ -1,5 +1,9 @@
-import React, { useContext, useMemo } from 'react'
-import { makeStyles } from '@material-ui/core'
+import React, { SVGProps, useContext, useMemo } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import Tooltip from '@material-ui/core/Tooltip'
+
+import clsx from 'clsx'
+
 import { MarkerPoint } from './MarkerPoint'
 import { IPosition } from '../Math/IPosition'
 import { positionToPixel } from '../Math/positionToPixel'
@@ -13,27 +17,40 @@ const HALF_MARKER_SIZE = MARKER_SIZE / 2
 const useStyles = makeStyles({
   root: {
     ...clickableOnMapMixin(),
-    width: MARKER_SIZE,
-    height: MARKER_SIZE,
+    cursor: 'pointer',
   },
 })
 
-interface IMarkerProps {
+interface IMarkerProps extends SVGProps<SVGSVGElement> {
   position: IPosition
+  title?: string
 }
 
-export function Marker({ position }: IMarkerProps) {
+export function Marker({ position, className, title, style = {}, ...other }: IMarkerProps) {
   const classes = useStyles()
-  const { map } = useContext(MapContext)
+  const { map, scale } = useContext(MapContext)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const place = useMemo(() => positionToPixel(map, position), [ position.lat, position.lon ])
 
-  return (
-    <MarkerPoint
-      onClick={() => console.warn("Marekr")}
-      className={ classes.root }
-      style={ { transform: `translate(${ place.x - HALF_MARKER_SIZE }px, ${ place.y - MARKER_SIZE }px)` } }
-    />
-  )
+  const marker = <MarkerPoint
+    className={ clsx(classes.root, className) }
+    style={ {
+      ...style,
+      width: MARKER_SIZE / scale,
+      height: MARKER_SIZE / scale,
+      transform: `translate(${ place.x - HALF_MARKER_SIZE }px, ${ place.y - MARKER_SIZE }px)`,
+    } }
+    { ...other }
+  />
+
+  if (title) {
+    return (
+      <Tooltip title={ title }>
+        { marker }
+      </Tooltip>
+    )
+  }
+
+  return marker
 }

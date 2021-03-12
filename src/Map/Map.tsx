@@ -1,12 +1,37 @@
 import React from 'react'
-import { MapContainer } from './Elements/Helpers/MapContainer'
+import { MapContainer } from './Helpers/MapContainer'
 import { Marker } from './Elements/Marker'
+import { IPlace } from './IPlace'
+
+const makers: IPlace[] = [
+  {
+    shortName: 'WZIM',
+    longName: 'Wydział Zastosowań Informatyki i Matematyki',
+    position: { lat: 52.16211895796358, lon: 21.04632866670382 },
+    positions: [
+      { name: 'Informatyka', image: 'http://www.wzim.sggw.pl/wp-content/uploads/2013/10/sggw1.jpg' },
+      { name: 'Informatyka i Ekonometria' },
+    ],
+  }, {
+    shortName: 'WE',
+    longName: 'Wydział Ekonomiczny',
+    position: { lat: 52.16465185139993, lon: 21.04905077554705 },
+    positions: [
+      { name: 'Ekonomia', image: 'https://www.we.sggw.pl/wp-content/uploads/2019/10/logotyp_we_PL.png' },
+      { name: 'Finanse i Rachunkowość' },
+      { name: 'Logistyka' },
+      { name: 'Turystyka i Rekreacja' },
+      { name: 'Zarządzanie' },
+    ],
+  },
+]
 
 export function Map() {
   return (
     <MapContainer>
-      <Marker position={ { lat: 52.16211895796358, lon: 21.04632866670382 } }/>
-      <div onMouseDown={e => e.stopPropagation()} style={{ background: 'red', width: 100, height: 100 }}>Ala ma kota</div>
+      {
+        makers.map(({ position, shortName }: IPlace) => <Marker key={shortName} position={ position } title={ shortName }/>)
+      }
     </MapContainer>
   )
 }

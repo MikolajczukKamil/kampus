@@ -1,5 +1,5 @@
 import { CSSProperties } from 'react'
 
 export const clickableOnMapMixin = (): CSSProperties => ({
-  pointerEvents: 'auto',
+  pointerEvents: 'auto !important' as 'auto',
 })

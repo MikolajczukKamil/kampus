@@ -130,11 +130,7 @@ class MapController {
     this.updateMapPosition()
   }
 
-  /**
-   * Handlers
-   *
-   *
-   */
+  /** Handlers */
 
   public handleStartMovingDesktop = ({ clientX, clientY, target }: ReactMouseEvent) => {
     if (target === this.mapRef.current) {
@@ -179,6 +175,10 @@ export function useMapController(mapRef: RefObject<HTMLDivElement>, rootRef: Ref
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ map ])
+
+  useEffect(() => {
+    controller.useScale(scale)
+  }, [ controller, scale ])
 
   return controller
 }

@@ -5,11 +5,20 @@ import reportWebVitals from './reportWebVitals'
 
 import './index.css'
 
+
+/**
+ * In Tooltip
+ *
+ * Warning: findDOMNode is deprecated in StrictMode.
+ * findDOMNode was passed an instance of Transition which is inside StrictMode.
+ * Instead, add a ref directly to the element you want to reference.
+ * Learn more about using refs safely here: https://reactjs.org/link/strict-mode-find-node
+ */
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  // <React.StrictMode>
+    <App/>,
+  // </React.StrictMode>,
+  document.getElementById('root'),
 )
 
 // If you want to start measuring performance in your app, pass a function

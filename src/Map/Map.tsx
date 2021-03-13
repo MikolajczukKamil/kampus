@@ -29,7 +29,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: theme.spacing(5),
   },
   someImg: {
-    maxWidth: 500,
+    width: '100%',
+    maxWidth: 512
   },
 }))
 
@@ -42,7 +43,11 @@ export function Map() {
     updateScale(value as number)
   }
 
-  const handleClose = () => {
+  const handleOpenDialog = (place: IPlace) => {
+    setSelectedPlace(place)
+  }
+
+  const handleCloseDialog = () => {
     setSelectedPlace(null)
   }
 
@@ -55,7 +60,7 @@ export function Map() {
               <Marker key={ place.shortName }
                       position={ place.position }
                       title={ place.shortName }
-                      onClick={ () => setSelectedPlace(place) }
+                      onClick={ () => handleOpenDialog(place) }
               />,
             )
           }
@@ -78,7 +83,7 @@ export function Map() {
 
       <Dialog
         open={ selectedPlace !== null }
-        onClose={ handleClose }
+        onClose={ handleCloseDialog }
       >
         <DialogTitle>{ selectedPlace?.shortName }</DialogTitle>
 
@@ -100,9 +105,7 @@ export function Map() {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={ handleClose } color="primary" variant="contained" autoFocus>
-            OK
-          </Button>
+          <Button onClick={ handleCloseDialog } color="primary" variant="contained">OK</Button>
         </DialogActions>
       </Dialog>
     </>

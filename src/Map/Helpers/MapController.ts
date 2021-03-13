@@ -154,9 +154,12 @@ class MapController {
     this.moveMap(clientX, clientY)
   }
 
-  public handleMoveMapMobile = ({ touches }: TouchEvent) => {
-    if (touches.length === 1) {
-      this.moveMap(touches[0].clientX, touches[0].clientY)
+  public handleMoveMapMobile = (event: TouchEvent) => {
+    if (event.touches.length === 1) {
+      this.moveMap(event.touches[0].clientX, event.touches[0].clientY)
+
+      // Todo: Reload on mobile
+      event.preventDefault()
     }
   }
 }
